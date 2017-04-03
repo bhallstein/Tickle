@@ -1,0 +1,25 @@
+{
+  "name": "tickupto",
+  "version": "0.0.1",
+  "description": "Simple JS number ticker",
+  "main": "Tickupto.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bhallstein/Tickupto.git"
+  },
+  "keywords": [
+    "Charts"
+  ],
+  "author": "Ben Hall <benhall@brandwatch.com> (https://ben.am/)",
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/bhallstein/Tickupto/blob/master/LICENSE.md"
+  },
+  "bugs": {
+    "url": "https://github.com/bhallstein/Tickupto/issues"
+  },
+  "homepage": "https://github.com/bhallstein/Tickupto"
+}

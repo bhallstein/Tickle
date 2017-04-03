@@ -1,5 +1,5 @@
 //
-// Tickle.js -- forked from countUp.js by @inorganik
+// Tickupto.js -- number ticker, forked from countUp.js by inorganik
 //
 //
 
