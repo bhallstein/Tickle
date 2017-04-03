@@ -3,8 +3,6 @@
 //
 //
 
-var $ = require('Dollar.js');
-
 var default_options = {
   value:        1234,           // the value to tick up to
   useEasing:    true,           // toggle easing
@@ -16,6 +14,17 @@ var default_options = {
   formattingFn: formatNumber,   // optional custom formatting function, default "1,234"
   renderFn:     print,          // rendering function
 };
+
+function extend(obj, add_properties) {
+  var o = { };
+  for (var i in obj) if (obj.hasOwnProperty(i)) {
+    o[i] = obj[i];
+  }
+  for (var i in add_properties) if (add_properties.hasOwnProperty(i)) {
+    o[i] = add_properties[i];
+  }
+  return o;
+}
 
 function formatNumber(num, opts) {
   var sep = opts.separator;
@@ -36,7 +45,7 @@ function print(el_wrapper, str) {
 
 
 function init(el_wrapper, opts) {
-  opts = $.extend(default_options, opts);
+  opts = extend(default_options, opts);
 
   var value = opts.value;
   var t_start;
