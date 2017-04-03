@@ -6,39 +6,46 @@
 var $ = require('Dollar.js');
 
 var default_options = {
+  value:        1234,           // the value to tick up to
   useEasing:    true,           // toggle easing
   duration_ms:  2000,           // animation duration
   prefix:       '',             // optional text before the result
   suffix:       '',             // optional text after the result
   separator:    '',             // character to use as a separator
-  easingFn:     easeOutExpo,    // optional custom easing function, default is Robert Penner's easeOutExpo
-  formattingFn: formatNumber,   // optional custom formatting function, default is formatNumber above
+  easingFn:     easeOutQuint,   // optional custom easing function, default easeOutQuint
+  formattingFn: formatNumber,   // optional custom formatting function, default "1,234"
+  renderFn:     print,          // rendering function
 };
 
 function formatNumber(num, opts) {
-  for (var _n = '', n = (Math.round(num) + ''); n.length > 0; n = n.slice(0, -3)) {
-    _n = n.slice(-3) + opts.separator + _n;
+  var sep = opts.separator;
+  var n = Math.round(num) + '';
+  var length_diff = (opts.value+'').length - n.length;
+  n = Array(length_diff + 1).join('0') + n;
+  for (var _n = ''; n.length > 0; n = n.slice(0, -3)) {
+    _n = n.slice(-3) + sep + _n;
   }
-  return opts.prefix + _n.slice(0, -1) + opts.suffix;s
+  return opts.prefix + (sep.length ? _n.slice(0, -sep.length) : _n) + opts.suffix;
 }
-function easeOutExpo(t) {
-  return (t==1) ? 1 : 1 - Math.pow(2, -10 * t);
+function easeOutQuint(t) {
+  return (t=t-1)*t*t*t*t + 1;
 }
-function print(el_wrapper, num, opts) {
-  el_wrapper.innerHTML = (opts.formattingFn)(num, opts);
+function print(el_wrapper, str) {
+  el_wrapper.innerHTML = str;
 }
 
 
-function init(el_wrapper, end_value, opts) {
+function init(el_wrapper, opts) {
   opts = $.extend(default_options, opts);
 
+  var value = opts.value;
   var t_start;
   var raf_id;
   var duration = opts.duration_ms;
 
   function start() {
     stop();
-    t_start = performance.now();
+    t_start = null;
     enqueue();
   }
   function enqueue() {
@@ -49,11 +56,17 @@ function init(el_wrapper, end_value, opts) {
   }
 
   function update(t) {
-    t = opts.easingFn((t - t_start) / duration).toFixed(2);
-    var cur_val = Math.min(end_value * t, end_value);
-    print(el_wrapper, cur_val, opts);
+    if (t_start === null) {
+      t_start = t;
+    }
+    t = (t - t_start) / duration;
+    var _t = opts.easingFn(t);
 
-    if (t < 1.0) {
+    var cur_val = Math.min(value * _t, value);
+    var str = (opts.formattingFn)(cur_val, opts);
+    (opts.renderFn)(el_wrapper, str, t);
+
+    if (cur_val.toFixed(0) < value) {
       enqueue();
     }
   }
